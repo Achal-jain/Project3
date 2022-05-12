@@ -153,7 +153,7 @@ const resultBook = async function (req, res) {
 
         let FindBook = await BookModel.findById({ _id: req.params.bookId })
 
-        console.log("okay:   ", FindBook)
+        
 
         let reviewsData = await reviewModel.find({ bookId: req.params.bookId })
 
