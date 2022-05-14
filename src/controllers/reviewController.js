@@ -70,8 +70,6 @@ const CreateReview = async function (req, res) {
         //SELECT PARTICULAR KEY
         let ShowReview = await reviewModel.findOne({ _id: ReviewCreate._id }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 }).populate("bookId")
 
-
-
         return res.status(201).send({ Status: true, message: 'Success', data: ShowReview })
 
     } catch (err) {
@@ -112,8 +110,6 @@ const ReviewUpdate = async function (req, res) {
                 return res.status(400).send({ Status: false, message: "Please enter the valid reviedwedBy name" })
             }
         }
-
-
         if (body.rating) {
             //REGEX VALIDATIONS 
             if (typeof body.rating == "string") {
@@ -125,9 +121,7 @@ const ReviewUpdate = async function (req, res) {
             }
 
         }
-
-        //review, rating, reviewer's name
-
+        // update review, rating, reviewer's name
 
         let UpdateReview= await reviewModel.findByIdAndUpdate({_id:ReviewId},{review:body.review, rating:body.rating, reviewedBy:body.reviewedBy},{new:true}).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 }).populate("bookId")
 
@@ -151,13 +145,13 @@ const ReviewDelete = async function (req, res) {
         let Checkbook = await BookModel.findOne({ _id: BookIddata, isDeleted: false })
 
         if (!Checkbook) {
-            return res.status(400).send({ Status: false, message: "Book does not exist / deleted book " })
+            return res.status(400).send({ Status: false, message: "Book does not exist / already deleted " })
         }
 
         let checkReview = await reviewModel.findOne({ _id: ReviewId, isDeleted: false })
 
         if (!checkReview) {
-            return res.status(400).send({ Status: false, message: "Review does not exist / deleted review " })
+            return res.status(400).send({ Status: false, message: "Review doccument does not exist / deleted review " })
         }
 
         let Deleterieview= await reviewModel.findByIdAndUpdate({_id:ReviewId},{isDeleted:true})
@@ -173,7 +167,6 @@ const ReviewDelete = async function (req, res) {
 }
 
 module.exports.ReviewUpdate = ReviewUpdate
-
 
 module.exports.CreateReview = CreateReview
 
