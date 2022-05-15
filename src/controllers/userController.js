@@ -1,5 +1,4 @@
 const usermodel = require('../models/userModel')
-const validator = require('../Middleware/validator');
 const jwt = require('jsonwebtoken')
 
 
@@ -38,7 +37,7 @@ const Createuser = async function (req, res) {
             return res.status(400).send({ Status: false, message: " name is not in valid format" })
         }
 
-         // *************---------------- Phoe validation ----------------------********************* //
+         // *************---------------- Phone validation ----------------------********************* //
         
 
         
@@ -148,7 +147,7 @@ const login = async function (req, res) {
             UserId: CheckUser._id,
             batch: "Uranium"
 
-        }, 'FunctionUp Group55', { expiresIn: '86400' });    // token expiry for 24hrs
+        }, 'FunctionUp Group55', { expiresIn: '30 Minutes' });    // token expiry for 24hrs
 
         res.setHeader("x-api-key", user_token);
         return res.status(201).send({ status: true, data: {token:user_token }});
