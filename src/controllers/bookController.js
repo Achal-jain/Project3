@@ -22,7 +22,8 @@ const isValid = function (value) {
 
 let nameRegex = /^[A-Za-z]{1}[A-Za-z ,-]{1,}$/
 
-let titleRegex = /^[A-Za-z1-9]{1}[A-Za-z0-9 ,-]{0,10000}$/
+
+let titleRegex = /^[A-Za-z1-9]{1}[A-Za-z0-9 ,-?]{0,10000}$/
 
 let ISBNRegex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$$/
 
@@ -73,7 +74,7 @@ const Bookcreate = async function (req, res) {
         //************************************************************************************************************************//
 
         if (body.isDeleted === true) {
-            return res.status(400).send({ Status: true, message: " Sorry  you are not allowed to create a book " })
+            return res.status(400).send({ Status: false, message: " Sorry  you are not allowed to create a book " })
         }
 
         // title validation
@@ -215,8 +216,10 @@ const GetBook = async function (req, res) {
         }
 
         //**********************  If query have no combination of userid,category,subcategory ********************** //
-
-        if(!query){
+        if(query.title || query.excerpt || query.releasedAt || query.reviews || query._id){
+            return res.status(404).send({ Status: false, message: " You can't get data with given filter" }) 
+        }
+        
             let FindAllBook = await BookModel.find({ isDeleted: false }).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).collation({locale:"en"}).sort({ title: 1 })
             if (FindAllBook.length > 0) {
                 return res.status(200).send({ Status: true, message: 'Success', data: FindAllBook })
@@ -224,11 +227,6 @@ const GetBook = async function (req, res) {
             else {
                 return res.status(404).send({ Status: false, message: " No data found or it can be deleted" })
             }
-        }
-        else {
-            return res.status(400).send({ Status: false, message: "Sorry you can not get data with another filter " })
-        }
-
     }
     catch (err) {
         return res.status(500).send({ Status: false, message: err.message })
@@ -239,6 +237,23 @@ const GetBook = async function (req, res) {
 
 const resultBook = async function (req, res) {
     try {
+        let data = req.params.bookId
+
+        if (data.length !== 24) {
+            return res.status(400).send({ Status: false, message: "Bookid is not valid, please enter 24 digit of bookid" })
+        }
+
+        let checkBook = await BookModel.findOne({ _id: data })
+
+        if (!checkBook) {
+            return res.status(404).send({ Status: false, message: "Book does not exist" })
+        }
+
+        let checkuser = await userModel.findOne({ _id: checkBook.userId })
+
+        if (!checkuser) {
+            return res.status(400).send({ Status: false, message: "user id does not exist" })
+        }
 
         let FindBook = await BookModel.findById({ _id: req.params.bookId })
 
@@ -252,14 +267,14 @@ const resultBook = async function (req, res) {
         if (FindBook.isDeleted === true) {
             let resultant = {}
             resultant = { _id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt, releasedAt, createdAt, updatedAt, reviewsData, reviewsData }
-            return res.status(200).send({ Status: true, message: 'Success', data: resultant })
+            return res.status(404).send({ Status: false, message: 'This is deleted book' })
         }
 
         //*********------- Getting book data if it is not deleted--------------------------------*********************//
-        let data = {}
-        data = { _id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt: "", releasedAt, createdAt, updatedAt, reviewsData }
+        let dataa = {}
+        dataa = { _id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt: "", releasedAt, createdAt, updatedAt, reviewsData }
 
-        return res.status(200).send({ Status: true, message: 'Success', data: data })
+        return res.status(200).send({ Status: true, message: 'Success', data: dataa })
 
     } catch (err) {
         return res.status(500).send({ Status: false, message: err.message })

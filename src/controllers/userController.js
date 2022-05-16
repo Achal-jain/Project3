@@ -50,17 +50,20 @@ const Createuser = async function (req, res) {
             return res.status(400).send({ Status: false, message: " email is required" })
         }
         if (!EmailRegex.test(body.email)) {
-            return res.status(400).send({ Status: false, message: " Please enter a valid email" })
+            return res.status(400).send({ Status: false, message: " Please enter a valid email, do not use @99acr only gmail/hotmail/yahoo etc" })
         }
+
+        let FinalEmail= body.email
+        let changeEmail= FinalEmail.toLowerCase()  // changing capital word into lowercase
 
          //******------------------- Email and phone unique condition -------------------****** //
 
-        let Checkuniquedata = await usermodel.findOne({ $or: [{ email: body.email }, { phone: body.phone }] })
+        let Checkuniquedata = await usermodel.findOne({ $or: [{ email: changeEmail}, { phone: body.phone }] })
         if (Checkuniquedata) {
             if (Checkuniquedata.phone == body.phone) {
                 return res.status(400).send({ Status: false, message: " This phone has been used already" })
             }
-            if (Checkuniquedata.email === body.email) {
+            if (Checkuniquedata.email === changeEmail) {
                 return res.status(400).send({ Status: false, message: " This email has been used already" })
             }
         }
@@ -70,7 +73,7 @@ const Createuser = async function (req, res) {
             return res.status(400).send({ Status: false, message: " password is required" })
         }
         if (!Passwordregex.test(body.password)) {
-            return res.status(400).send({ Status: false, message: " Please enter a valid password, minlength 8, maxxlength 15" })
+            return res.status(401).send({ Status: false, message: " Please enter a valid password, minlength 8, maxxlength 15" })
         }
         
         //******------------------- regex validation for street, city && Pincode  -------------------****** //
@@ -92,7 +95,7 @@ const Createuser = async function (req, res) {
         if (body.title === "Mr" || body.title === "Miss" || body.title === "Mrs") {
 
             let userCreate = await usermodel.create(body)
-            return res.status(201).send({ Status: true, message: 'Success', data: userCreate })
+            return res.status(200).send({ Status: true, message: 'Success', data: userCreate })
         }
         return res.status(400).send({ Status: false, message: " Please enter a valid title you can use only anyone from these Mr/Miss/Mrs" })
     }
@@ -118,8 +121,10 @@ const login = async function (req, res) {
             return res.status(400).send({ Status: false, message: " email is required" })
         }
         if (!EmailRegex.test(body.email)) {
-            return res.status(400).send({ Status: false, message: " Please enter a valid email" })
+            return res.status(400).send({ Status: false, message: " Please enter a valid email, do not use @99acr only gmail/hotmail/yahoo etc" })
         }
+        let FinalEmail= body.email
+        let changeEmail= FinalEmail.toLowerCase()  // changing capital word into lowercase
 
         //******------------------- password validation -------------------****** //
 
@@ -133,7 +138,7 @@ const login = async function (req, res) {
         //******------------------- checking User Detail -------------------****** //
     
 
-        let CheckUser = await usermodel.findOne({ email: body.email, password: body.password });
+        let CheckUser = await usermodel.findOne({ email: changeEmail, password: body.password });
 
         if (!CheckUser) {
             return res.status(400).send({ Status: false, message: "username or the password is not correct" });

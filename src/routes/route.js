@@ -19,7 +19,7 @@ router.post('/books',Middleware.Mid1,BookController.Bookcreate)
 
 router.get('/books',Middleware.Mid1,BookController.GetBook)
 
-router.get('/books/:bookId',Middleware.Mid1,Middleware.Mid2,BookController.resultBook)
+router.get('/books/:bookId',Middleware.Mid1,BookController.resultBook)
 
 router.put("/books/:bookId",Middleware.Mid1,Middleware.Mid2,BookController.UpdateBook)
 

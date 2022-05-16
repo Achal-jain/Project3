@@ -77,7 +77,7 @@
 - Return HTTP status 400 for an invalid request with a response body like [this](#error-response-structure)
 
 ### GET /books
-- Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field.     Response example [here](#get-books-response)
+- Returns all books in the collection that aren't deleted. Return only book _id, title, excerpt, userId, category, releasedAt, reviews field. Response example [here](#get-books-response)
 - Return the HTTP status 200 if any documents are found. The response structure should be like [this](#successful-response-structure) 
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
 - Filter books list by applying filters. Query param can have any combination of below filters.
@@ -192,10 +192,9 @@ Refer below sample
   "ISBN": "978-0008391331",
   "category": "Book",
   "subcategory": "Non fiction",
-  "deleted": false,
+  "isDeleted": false,
   "reviews": 0,
-  "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
-  "releasedAt": "2021-09-17T04:25:07.803Z"
+  "releasedAt": "2021-09-17"
   "createdAt": "2021-09-17T04:25:07.803Z",
   "updatedAt": "2021-09-17T04:25:07.803Z",
 }
@@ -254,9 +253,8 @@ Refer below sample
     "userId": ObjectId("88abc190ef0288abc190ef02")
     "category": "Book",
     "subcategory": ["Non fiction", "Self Help"],
-    "deleted": false,
-    "reviews": 0,
-    "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
+    "isDeleted": false,
+    "reviews": 4,
     "releasedAt": "2021-09-17T04:25:07.803Z"
     "createdAt": "2021-09-17T04:25:07.803Z",
     "updatedAt": "2021-09-17T04:25:07.803Z",
@@ -310,9 +308,8 @@ Refer below sample
     "userId": ObjectId("88abc190ef0288abc190ef02")
     "category": "Book",
     "subcategory": "Non fiction", "Self Help"],
-    "deleted": false,
+    "isDeleted": false,
     "reviews": 0,
-    "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,
     "releasedAt": "2021-09-17"
     "createdAt": "2021-09-17T04:25:07.803Z",
     "updatedAt": "2021-09-17T04:25:07.803Z",

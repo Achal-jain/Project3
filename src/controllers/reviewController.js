@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose")
 const BookModel = require("../models/bookModel")
 const reviewModel = require("../models/reviewModel")
 
@@ -5,7 +6,19 @@ const reviewModel = require("../models/reviewModel")
 
 let nameRegex = /^[A-Za-z]{1}[A-Za-z -]{1,}$/
 
+//validator
 
+const isValid = function (value) {
+    if (typeof (value) === 'undefined' || typeof (value) === null) {
+        return false
+    }
+    if (typeof (value).trim().length == 0) {
+        return false
+    }
+    if (typeof (value) === "string" && (value).trim().length > 0) {
+        return true
+    }
+}
 
 
 
@@ -67,12 +80,20 @@ const CreateReview = async function (req, res) {
 
         //FIND ID AND UPDATE REVIEW
 
-        let UpdateCountReview = await BookModel.findByIdAndUpdate({ _id: data }, { $inc: { reviews: 1 } })
+        let UpdateCountReview = await BookModel.findByIdAndUpdate({ _id: data }, { $inc: { reviews: 1 } },{new:true})
 
         //SELECT PARTICULAR KEY
         let ShowReview = await reviewModel.findOne({ _id: ReviewCreate._id }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 }).populate("bookId")
 
-        return res.status(201).send({ Status: true, message: 'Success', data: ShowReview })
+
+        //====================================================================================//
+        let reviewsData = await reviewModel.find({bookId:data,isDeleted:false}).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
+        const { _id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt, releasedAt, createdAt, updatedAt } = UpdateCountReview
+        let display ={}
+        display={_id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt, releasedAt, createdAt, updatedAt,reviewsData}
+        //======================================================================================//
+
+        return res.status(201).send({ Status: true, message: 'Success', data: display })
 
     } catch (err) {
         return res.status(500).send({ Status: false, message: err.message })
@@ -90,7 +111,7 @@ const ReviewUpdate = async function (req, res) {
         let BookIddata = req.params.bookId
         let ReviewId = req.params.reviewId
         let body = req.body
-
+ 
         if (ReviewId.length !== 24) {
             return res.status(400).send({ Status: false, message: "ReviewId is not valid, please enter 24 digit of ReviewId" })
         }
@@ -100,10 +121,11 @@ const ReviewUpdate = async function (req, res) {
         }
 
         let Checkbook = await BookModel.findOne({ _id: BookIddata, isDeleted: false })
-
+        
         if (!Checkbook) {
             return res.status(400).send({ Status: false, message: "Book does not exist / deleted book " })
         }
+       
 
         let checkReview = await reviewModel.findOne({ _id: ReviewId, isDeleted: false })
 
@@ -135,7 +157,15 @@ const ReviewUpdate = async function (req, res) {
 
         let UpdateReview = await reviewModel.findOneAndUpdate({ _id: ReviewId, bookId:BookIddata }, { review: body.review, rating: body.rating, reviewedBy: body.reviewedBy }, { new: true }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 }).populate("bookId")
         if(UpdateReview){
-            return res.status(200).send({ Status: true, message: 'Success', data: UpdateReview })
+        //================================================================================================================//
+
+        let reviewsData = await reviewModel.find({bookId:BookIddata,isDeleted:false}).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
+        const { _id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt, releasedAt, createdAt, updatedAt } = Checkbook
+        let display ={}
+        display={_id, title, excerpt, userId, category, subcategory, deleted, reviews, deletedAt, releasedAt, createdAt, updatedAt,reviewsData}
+
+        //===============================================================================================================//
+            return res.status(200).send({ Status: true, message: 'Success', data: display })
         }
         else{
             return res.status(404).send({ Status: false, message: "Review document does not exist " }) 
