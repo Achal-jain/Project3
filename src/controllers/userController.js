@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 //---------------------regex create for validation ----------------------------------***
  
-        let EmailRegex = /^[A-Za-z]{1}[A-Za-z0-9._]{1,}@[A-Za-z]{2,15}[.]{1}[a-z.]{2,5}$/
+        let EmailRegex = /^[A-Za-z]{1}[A-Za-z0-9._]{1,}@[A-Za-z]{2,15}[.]{1}[a-z.]{2,5}$/   //here i m not using @99acre.com :- accepatnce email something: @gmail/hotmail/yahoo etc.
         let Passwordregex = /^[A-Z0-9a-z]{1}[A-Za-z0-9.@#$&]{7,14}$/
 
         let Phoneregex = /^[6-9]{1}[0-9]{9}$/
@@ -24,12 +24,12 @@ const Createuser = async function (req, res) {
         if (Object.keys(body).length === 0) {
             return res.status(400).send({ Status: false, message: " Sorry Body can't be empty" })
         }
+
         if (!body.title) {
             return res.status(400).send({ Status: false, message: " Title is required" })
         }
 
         // *************---------------- name validation ----------------------********************* //
-        
         if (!body.name) {
             return res.status(400).send({ Status: false, message: " name is required" })
         }
@@ -37,9 +37,13 @@ const Createuser = async function (req, res) {
             return res.status(400).send({ Status: false, message: " name is not in valid format" })
         }
 
+<<<<<<< HEAD
          // *************---------------- Phone validation ----------------------********************* //
         
 
+=======
+         // *************---------------- Phoe && Email validation ----------------------********************* //
+>>>>>>> c220475b80103a665fcb82409a50531d01122a79
         
         if (!body.phone) {
             return res.status(400).send({ Status: false, message: " phone is required" })
@@ -66,6 +70,7 @@ const Createuser = async function (req, res) {
                 return res.status(400).send({ Status: false, message: " This email has been used already" })
             }
         }
+        // *****------------- Checking PassWord -----------------------------------*******//
 
         if (!body.password) {
             return res.status(400).send({ Status: false, message: " password is required" })
@@ -87,6 +92,9 @@ const Createuser = async function (req, res) {
                 return res.status(400).send({ Status: false, message: " Please enter a valid pincode of 6 digit" })
             }
         }
+
+        // ******------------------- validating title   -------------------****** //
+
         if (body.title === "Mr" || body.title === "Miss" || body.title === "Mrs") {
 
             let userCreate = await usermodel.create(body)
@@ -97,10 +105,9 @@ const Createuser = async function (req, res) {
     catch (err) {
         return res.status(500).send({ Status: false, message: err.message })
     }
-
 }
 
-//-------------------USER LOGIN----------------------------***
+//--------------------------------------------------USER LOGIN------------------------------------------------***//
 
 const login = async function (req, res) {
 
