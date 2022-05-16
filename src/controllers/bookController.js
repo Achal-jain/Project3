@@ -22,7 +22,6 @@ const isValid = function (value) {
 
 let nameRegex = /^[A-Za-z]{1}[A-Za-z ,-]{1,}$/
 
-
 let titleRegex = /^[A-Za-z1-9]{1}[A-Za-z0-9 ,-]{0,10000}$/
 
 let ISBNRegex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$$/

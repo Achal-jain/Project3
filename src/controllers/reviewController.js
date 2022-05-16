@@ -44,7 +44,7 @@ const CreateReview = async function (req, res) {
         if (!body.rating) {
             return res.status(400).send({ Status: false, message: "Please enter the rating" })
         }
-        //REGEX VALIDATIONS 
+        
         if (typeof body.rating == "string") {
             return res.status(400).send({ Status: false, message: " rating can't be string " })
         }
@@ -121,7 +121,7 @@ const ReviewUpdate = async function (req, res) {
             }
         }
         if (body.rating) {
-            //REGEX VALIDATIONS 
+            
             if (typeof body.rating == "string") {
                 return res.status(400).send({ Status: false, message: " rating can't be string " })
             }

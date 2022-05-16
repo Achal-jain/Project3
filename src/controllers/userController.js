@@ -37,13 +37,7 @@ const Createuser = async function (req, res) {
             return res.status(400).send({ Status: false, message: " name is not in valid format" })
         }
 
-<<<<<<< HEAD
-         // *************---------------- Phone validation ----------------------********************* //
-        
-
-=======
          // *************---------------- Phoe && Email validation ----------------------********************* //
->>>>>>> c220475b80103a665fcb82409a50531d01122a79
         
         if (!body.phone) {
             return res.status(400).send({ Status: false, message: " phone is required" })
